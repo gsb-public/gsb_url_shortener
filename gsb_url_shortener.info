@@ -1,0 +1,5 @@
+name = GSB URL Shortener
+description = Shortens URL
+package = GSB
+core = 7.x
+files[] = lib/GSBUrlShortener.php

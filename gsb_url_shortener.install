@@ -1,0 +1,37 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the GSB Url Shortener module.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function gsb_url_shortener_schema() {
+  $schema['gsb_url_shortener'] = array(
+    'description' => t('GSB Url Shortener'),
+    'fields' => array(
+      'id' => array(
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => t('Primary Key: Unique access id.'),
+      ),
+      'alias' => array(
+        'description' => t('Link alias'),
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => TRUE,
+      ),
+      'destination' => array(
+        'description' => t('Link destination'),
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('id'),
+  );
+  return $schema;
+}

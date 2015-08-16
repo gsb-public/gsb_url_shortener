@@ -1,0 +1,123 @@
+<?php
+
+/**
+ * @file
+ * Provides a UI for creating shortened urls.
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function gsb_url_shortener_menu() {
+  $items = array();
+  $items['admin/config/gsb/url-shortener'] = array(
+    'title' => 'Shortened URLs',
+    'description' => 'Manage GSB shortened urls.',
+    'page callback' => 'gsb_url_shortener_overview',
+    'access arguments' => array('administer shortened urls'),
+    'file' => 'gsb_url_shortener.admin.inc',
+  );
+  $items['admin/config/gsb/url-shortener/add'] = array(
+    'title' => 'Add shortened link',
+    'page callback' => 'gsb_url_shortener_add_page',
+    'access arguments' => array('administer shortened urls'),
+    'type' => MENU_LOCAL_ACTION,
+    'file' => 'gsb_url_shortener.admin.inc',
+  );
+  $items['admin/config/gsb/url-shortener/manage/%gsb_url_shortener'] = array(
+    'title' => 'Edit connecting link',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('gsb_url_shortener_form', 5),
+    'load arguments' => array(6),
+    'access arguments' => array('administer shortened urls'),
+    'file' => 'gsb_url_shortener.admin.inc',
+  );
+  $items['admin/config/gsb/url-shortener/manage/%gsb_url_shortener/delete'] = array(
+    'title' => 'Delete shortened url',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('gsb_url_shortener_delete_form', 5),
+    'load arguments' => array(6),
+    'access arguments' => array('administer shortened urls'),
+    'file' => 'gsb_url_shortener.admin.inc',
+  );
+  $items['r/%gsb_url_shortener_alias'] = array(
+    'title' => 'Connecting...',
+    'page callback' => 'gsb_url_shortener_redirect',
+    'page arguments' => array(1),
+    'load arguments' => array(1),
+    'access callback' => TRUE,
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function gsb_url_shortener_permission() {
+  return array(
+    'administer shortened urls' =>  array(
+      'title' => t('Administer shortened urls'),
+      'description' => t('Perform administration tasks on shortened urls.'),
+    ),
+  );
+}
+
+/**
+ * Menu load callback: Loads a single shortened url by its id.
+ *
+ * @param string $id
+ *   The shortened url id.
+ *
+ * @return \GSBUrlShortener
+ *   The shortened url object.
+ */
+function gsb_url_shortener_load($id) {
+  return \GSBUrlShortener::loadById($id);
+}
+
+/**
+ * Menu load callback: Loads a single shortened url by its alias.
+ *
+ * @param string $alias
+ *   The shortened url alias.
+ *
+ * @return \GSBUrlShortener
+ *   The shortened url object.
+ */
+function gsb_url_shortener_alias_load($alias) {
+  $request_uri = $_SERVER['REQUEST_URI'];
+  $prefix = '/r/';
+  if (substr($request_uri, 0, strlen($prefix)) == $prefix) {
+    $alias = substr($request_uri, strlen($prefix));
+  }
+  $parsed_alias = drupal_parse_url($alias);
+  $alias = $parsed_alias['path'];
+  return \GSBUrlShortener::loadByAlias($alias);
+}
+
+/**
+ * Page callback: Goes to the destination url
+ *
+ * @param \GSBUrlShortener $shortener
+ *   The shortened url object.
+ */
+function gsb_url_shortener_redirect(\GSBUrlShortener $shortener) {
+  $request_uri = $_SERVER['REQUEST_URI'];
+  $prefix = '/r/';
+  if (substr($request_uri, 0, strlen($prefix)) == $prefix) {
+    $uri = substr($request_uri, strlen($prefix));
+  }
+  $parsed_uri = drupal_parse_url($uri);
+  $parsed_dest = drupal_parse_url($shortener->destination);
+  $dest_query = array_merge($parsed_uri['query'], $parsed_dest['query']);
+  $dest_query = http_build_query($dest_query);
+  $destination = $parsed_dest['path'];
+  $destination .= empty($dest_query) ? '' : '?' .  $dest_query;
+  if (!empty($parsed_dest['fragment'])) {
+    $destination .= '#' . $parsed_dest['fragment'];
+  }
+  else if (!empty($parsed_uri['fragment'])) {
+    $destination .= '#' . $parsed_uri['fragment'];
+  }
+  drupal_goto($destination);
+}

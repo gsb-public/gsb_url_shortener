@@ -41,7 +41,7 @@ class GSBUrlShortener {
   }
 
   /**
-   * Deletes the connecting link.
+   * Deletes the shortened link.
    */
   public function delete() {
     db_delete('gsb_url_shortener')

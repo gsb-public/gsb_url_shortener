@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Page callback for the connecting link overview.
+ * Page callback for the shortened url overview.
  */
 function gsb_url_shortener_overview() {
   $build = array();
@@ -57,7 +57,7 @@ function gsb_url_shortener_add_page() {
 }
 
 /**
- * Form constructor for the connecting link form.
+ * Form constructor for the shortened url form.
  */
 function gsb_url_shortener_form($form, &$form_state, \GSBUrlShortener $link) {
   $form['is_new'] = array(
@@ -84,7 +84,7 @@ function gsb_url_shortener_form($form, &$form_state, \GSBUrlShortener $link) {
     '#required' => TRUE,
     '#maxlength' => 255,
     '#default_value' => $link->destination,
-    //'#element_validate' => array('gsb_connecting_link_destination_validate'),
+    //'#element_validate' => array('gsb_url_shortener_destination_validate'),
   );
   $form['actions'] = array('#type' => 'actions');
   $form['actions']['submit'] = array(
@@ -140,7 +140,7 @@ function gsb_url_shortener_delete_form($form, &$form_state, \GSBUrlShortener $sh
  */
 function gsb_url_shortener_delete_form_submit(&$form, &$form_state) {
   $shortener = $form_state['storage']['gsb_url_shortener'];
-  drupal_set_message(t('Connecting link %alias has been deleted', array('%alias' => $shortener->alias)));
+  drupal_set_message(t('Shortened url %alias has been deleted', array('%alias' => $shortener->alias)));
   $shortener->delete();
   $form_state['redirect'] = 'admin/config/gsb/url-shortener';
 }

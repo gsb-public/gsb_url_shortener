@@ -111,7 +111,7 @@ function gsb_url_shortener_redirect(\GSBUrlShortener $shortener) {
   $parsed_dest = drupal_parse_url($shortener->destination);
   $dest_query = array_merge($parsed_uri['query'], $parsed_dest['query']);
   $dest_query['gsb-referer'] = $_SERVER['HTTP_REFERER'];
-  $dest_query = http_build_query($dest_query);
+  $dest_query = drupal_http_build_query($dest_query);
   $destination = $parsed_dest['path'];
   $destination .= empty($dest_query) ? '' : '?' .  $dest_query;
   if (!empty($parsed_dest['fragment'])) {

@@ -25,7 +25,7 @@ function gsb_url_shortener_menu() {
     'file' => 'gsb_url_shortener.admin.inc',
   );
   $items['admin/config/gsb/url-shortener/manage/%gsb_url_shortener'] = array(
-    'title' => 'Edit connecting link',
+    'title' => 'Edit shortened url',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('gsb_url_shortener_form', 5),
     'load arguments' => array(6),

@@ -84,7 +84,7 @@ function gsb_url_shortener_form($form, &$form_state, \GSBUrlShortener $link) {
     '#required' => TRUE,
     '#maxlength' => 255,
     '#default_value' => $link->destination,
-    //'#element_validate' => array('gsb_url_shortener_destination_validate'),
+    '#element_validate' => array('gsb_url_shortener_destination_validate'),
   );
   $form['actions'] = array('#type' => 'actions');
   $form['actions']['submit'] = array(
@@ -93,6 +93,18 @@ function gsb_url_shortener_form($form, &$form_state, \GSBUrlShortener $link) {
     '#value' => t('Save shortened url'),
   );
   return $form;
+}
+
+/**
+ * #element_validate callback: Ensures the destination is absolute.
+ */
+function gsb_url_shortener_destination_validate(&$element, &$form_state, $complete_form) {
+  if (!url_is_external($element['#value'])) {
+    form_error($element, t('The destination must be an absolute URL.'));
+  }
+  if (!valid_url($element['#value'], TRUE)) {
+    form_error($element, t('The destination must be a valid URL.'));
+  }
 }
 
 /**

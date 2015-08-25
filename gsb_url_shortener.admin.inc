@@ -16,7 +16,7 @@ function gsb_url_shortener_overview() {
   $rows = array();
   foreach ($links as $link) {
     $row = array();
-    $row['alias'] = l($link->alias, $link->alias);
+    $row['alias'] = l($link->alias, 'r/' . $link->alias);
     $row['destination'] = l($link->destination, $link->destination);
 
     $operations['edit'] = array(

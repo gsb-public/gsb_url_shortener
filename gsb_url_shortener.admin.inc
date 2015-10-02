@@ -68,15 +68,6 @@ function gsb_url_shortener_form($form, &$form_state, \GSBUrlShortener $link) {
     '#type' => 'value',
     '#value' => $link->id,
   );
-  $form['alias'] = array(
-    '#title' => t('Alias'),
-    '#type' => 'textfield',
-    '#description' => t('A unique link alias.'),
-    '#field_prefix' => $GLOBALS['base_url'] . '/r/',
-    '#required' => TRUE,
-    '#maxlength' => 255,
-    '#default_value' => $link->alias,
-  );
   $form['destination'] = array(
     '#title' => t('Destination'),
     '#description' => t("An absolute URL, including 'http://'."),
@@ -85,6 +76,15 @@ function gsb_url_shortener_form($form, &$form_state, \GSBUrlShortener $link) {
     '#maxlength' => 255,
     '#default_value' => $link->destination,
     '#element_validate' => array('gsb_url_shortener_destination_validate'),
+  );
+  $form['alias'] = array(
+    '#title' => t('Alias'),
+    '#type' => 'textfield',
+    '#description' => t('A unique link alias.'),
+    '#field_prefix' => $GLOBALS['base_url'] . '/r/',
+    '#required' => TRUE,
+    '#maxlength' => 255,
+    '#default_value' => $link->alias,
   );
   $form['actions'] = array('#type' => 'actions');
   $form['actions']['submit'] = array(
